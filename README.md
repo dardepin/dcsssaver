@@ -1,7 +1,7 @@
 ## Introduction
 For GIT (Github) testing only! DCSS Saver is small Python GUI application to save your character in __Dungeon Crawl Stone Soup__ game!<br />
 
-![Screenshot](https://imgur.com/82dcy2B)
+![Screenshot](Screenshot.png)
 ## Current Releases
 __0.1__ - Initial commit.<br />
 ## Platforms
