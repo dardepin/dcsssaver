@@ -2,6 +2,7 @@
 import os;
 import glob;
 import shutil;
+import platform;
 from datetime import datetime;
 
 from tkinter import *;
@@ -9,7 +10,14 @@ from tkinter import messagebox;
 
 class Saver:
     def __init__(self):
-        self.data_path = os.path.expanduser('~') + '/.crawl/saves/';
+        ops = platform.system();
+        if ops == 'Linux':
+            self.data_path = os.path.expanduser('~') + '/.crawl/saves/';
+        elif ops == 'Windows':
+            pass;
+        elif ops == 'Darwin':
+            self.data_path = os.path.expanduser('~') + '/Library/Application Support/Dungeon Crawl Stone Soup/saves/';
+        else: print('Unknown OS, can\'t know data path');
         if not os.path.isdir(self.data_path):
             print('Dungeon Crawl Stone Stone Soup not installed?');
             return;
@@ -22,7 +30,7 @@ class Saver:
             self.app.iconphoto(False, PhotoImage(file = os.getcwd() + '/saver.png'));
         except TclError as ex:
             print(ex);
-        self.app.title('DCSS Dummy Saver v0.1')
+        self.app.title('DCSS Dummy Saver v0.1a')
         self.characterbox = Listbox();
         self.characterbox.pack(side = LEFT);
         self.characterscroll = Scrollbar(command = self.characterbox.yview);
@@ -42,7 +50,8 @@ class Saver:
         Button(self.frame, text="< - Load save", command = self.load_save).pack(fill = X);
         Button(self.frame, text="Delete save ->", command = self.delete_save).pack(fill = X);
         Button(self.frame, text="<- Delete character", command = self.delete_character).pack(fill = X);
-    
+
+        self.app.resizable(False, False);
         self.reload_characters(); self.reload_saves();
 
     def reload_saves(self):
@@ -62,7 +71,9 @@ class Saver:
         if index != ():
             charachter = self.characterbox.get(index);
             # if self.question('Saving character ' + charachter):
-            shutil.copy2(self.data_path + charachter, self.save_path + self.charachtertosave(charachter));
+            if not (os.path.isfile(self.data_path + charachter)):
+                pass;
+            else: shutil.copy2(self.data_path + charachter, self.save_path + self.charachtertosave(charachter));
         self.reload_saves();
         return;
     
@@ -71,7 +82,9 @@ class Saver:
         if index != ():
             save = self.savebox.get(index);
             if self.question('Load save ' + save + ' ?'):
-                shutil.copy2(self.save_path + save, self.data_path + self.savetocharacter(save));
+                if not (os.path.isfile(self.save_path + save)):
+                    pass;
+                else: shutil.copy2(self.save_path + save, self.data_path + self.savetocharacter(save));
         self.reload_characters();
         return;
     
@@ -80,7 +93,9 @@ class Saver:
         if index != ():
             save = self.savebox.get(index);
             if self.question('Delete save ' + save + ' ? This can\'t be undo'):
-                os.remove(self.save_path + save);
+                if not (os.path.isfile(self.save_path + save)):
+                    pass;
+                else: os.remove(self.save_path + save);
         self.reload_saves();
         return;
 
@@ -89,7 +104,9 @@ class Saver:
         if index != ():
             chatacter = self.characterbox.get(index);
             if self.question('Delete character ' + chatacter + ' ? This can\'t be undo'):
-                os.remove(self.data_path + chatacter);
+                if not (os.path.isfile(self.data_path + chatacter)):
+                    pass;
+                else: os.remove(self.data_path + chatacter);
         self.reload_characters();
         return;
 
